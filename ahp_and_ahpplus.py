@@ -37,13 +37,19 @@ def get_normalized_eigenvector_persons(main_table, c_array):
     normalized_eigenvector_persons = []
     for criterion in range(len(c_array[0])):
         eigenvector_person = []
+        pcm = []
         for numerator in main_table:
             eigenvector = 1
+            row_in_pcm = []
             for denominator in main_table:
+                value = numerator[criterion] / denominator[criterion]
                 eigenvector *= numerator[criterion] / denominator[criterion]
+                row_in_pcm.append(value)
+            pcm.append(row_in_pcm)
             eigenvector_person.append(eigenvector ** (1 / len(main_table)))
         normalized_eigenvector_persons.append([value / sum(eigenvector_person) for value in eigenvector_person])
-
+        consistency_check(pcm, criterion)
+    print()
     for counter_c, i in enumerate(normalized_eigenvector_persons):
         print(f'Values of priorities of candidates by с{counter_c + 1}:')
         for counter_candidate, candidate in enumerate(i):
@@ -133,10 +139,24 @@ def ahp_plus(normalized_eigenvector_persons, weight_coefficient):
             print(f'The final weight vector of {counter_persons+1} is {person}')
         print(f'Sum result is {sum(normalized_weight_vector)}\n')
 
+def consistency_check(matrix, number_c):
+    import numpy as np
+    from numpy import linalg as LA
+    wa = LA.eigvals(np.array(matrix))
+    lambda_max = round(max(wa).real)
+    random_consistency = {3: 0.58,
+                          4: 0.9}
+    consistency_index = (lambda_max - len(matrix))/(len(matrix) - 1)
+    consistency_relation = consistency_index/random_consistency[len(matrix)]
+    if consistency_relation < 0.1:
+        print(f'Paired comparison matrix by c{number_c+1} is consistency')
+    else:
+        print(f'Paired comparison matrix by c{number_c+1} is inconsistent')
+
 
 if __name__ == '__main__':
-    AHP = False
-    AHP_PLUS = True
+    AHP = True
+    AHP_PLUS = False
     if AHP:
         # AHP          C1 C2 C3
         main_table = [[4, 9, 1],  # П1
