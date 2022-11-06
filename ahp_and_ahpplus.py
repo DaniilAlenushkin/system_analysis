@@ -139,6 +139,7 @@ def ahp_plus(normalized_eigenvector_persons, weight_coefficient):
             print(f'The final weight vector of {counter_persons+1} is {person}')
         print(f'Sum result is {sum(normalized_weight_vector)}\n')
 
+
 def consistency_check(matrix, number_c):
     import numpy as np
     from numpy import linalg as LA
