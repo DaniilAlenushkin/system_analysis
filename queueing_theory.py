@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import warnings
 
 warnings.filterwarnings('ignore')
+#  Laboratory work №3
 
 
 def plotting(data, m):
@@ -22,31 +23,32 @@ def plotting(data, m):
     plt.show()
 
 
-Cef = 0.15/365  # $/year
-C1 = 100000  # $
-C2 = 50  # $/day
-C3 = 30  # $/day
-C4 = 60  # $/day pcs
-C5 = 100  # $/day pcs
-T = 6000/24  # day
-lmbds = [i for i in range(10, 21)] # pcs/day
-mus = [i for i in range(2, 8)] # pcs/day
-for mu in mus:
-    I_mu_const = []
-    for lmbd in lmbds:
-        I = []
-        for s in range(1, 10):
-            m = 10 - s
-            ro = lmbd/mu
-            summ_for_P0 = sum([(ro**k)/(math.factorial(k)) for k in range(0, s+1)])
-            if ro/s != 1.0:
-                P0 = (summ_for_P0+(((ro**(s+1))/(s*math.factorial(s)))*((1-((ro/s)**m))/(1-(ro/s)))))**(-1)
-                M1 = ((ro**(s+1))/(s*math.factorial(s)))*((1-((ro/s)**m)*(m+1-m*(ro/s)))/((1-(ro/s))**2))*P0
-            else:
-                P0 = (summ_for_P0+(m*(ro**(s+1)))/(s*math.factorial(s)))**(-1)
-                M1 = ((ro**(s+1))/(s*math.factorial(s)))*((m*(m+1))/2)*P0
-            Psm = ((ro**(s+m))*P0)/((s**m)*math.factorial(s))
-            M2 = sum([((s-k)*(ro**k)*P0)/math.factorial(k) for k in range(s)])
-            I.append(Cef*C1*s + C2*(s-M2)*T + C3*M2*T + C5*T*lmbd*Psm + C4*M1*T)
-        I_mu_const.append(I)
-    plotting(I_mu_const, mu)
+if __name__ == '__main__':
+    Cef = 0.15/365  # $/year
+    C1 = 100000  # $
+    C2 = 50  # $/day
+    C3 = 30  # $/day
+    C4 = 60  # $/day pcs
+    C5 = 100  # $/day pcs
+    T = 6000/24  # day
+    lmbds = [i for i in range(10, 21)] # pcs/day
+    mus = [i for i in range(2, 8)] # pcs/day
+    for mu in mus:
+        I_mu_const = []
+        for lmbd in lmbds:
+            I = []
+            for s in range(1, 10):
+                m = 10 - s
+                ro = lmbd/mu
+                summ_for_P0 = sum([(ro**k)/(math.factorial(k)) for k in range(0, s+1)])
+                if ro/s != 1.0:
+                    P0 = (summ_for_P0+(((ro**(s+1))/(s*math.factorial(s)))*((1-((ro/s)**m))/(1-(ro/s)))))**(-1)
+                    M1 = ((ro**(s+1))/(s*math.factorial(s)))*((1-((ro/s)**m)*(m+1-m*(ro/s)))/((1-(ro/s))**2))*P0
+                else:
+                    P0 = (summ_for_P0+(m*(ro**(s+1)))/(s*math.factorial(s)))**(-1)
+                    M1 = ((ro**(s+1))/(s*math.factorial(s)))*((m*(m+1))/2)*P0
+                Psm = ((ro**(s+m))*P0)/((s**m)*math.factorial(s))
+                M2 = sum([((s-k)*(ro**k)*P0)/math.factorial(k) for k in range(s)])
+                I.append(Cef*C1*s + C2*(s-M2)*T + C3*M2*T + C5*T*lmbd*Psm + C4*M1*T)
+            I_mu_const.append(I)
+        plotting(I_mu_const, mu)
