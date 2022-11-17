@@ -10,11 +10,12 @@ warnings.filterwarnings('ignore')
 
 class App(Tk):
     def __init__(self):
+        # Rendering the application window
         super().__init__()
         self.bg = '#afeeee'
         self.title("Laboratory work №4")
         self.configure(background=self.bg)
-        self.number_of_values = 1100
+        self.number_of_values = 1100  # Number of values by x
         self.row = (i for i in range(12))
         self.cm = 1 / 2.54
 
@@ -62,29 +63,33 @@ class App(Tk):
         self.lbl_author.grid(column=1, row=next(self.row))
 
     def clicked_first_point(self):
+        # Thread start function for the first point
         thread_first_point = threading.Thread(target=self.first_point, daemon=True)
         self.btn_first_point['state'] = 'disabled'
         thread_first_point.start()
         self.after(ms=1000, func=lambda: self.button_unlock(thread_first_point, self.btn_first_point))
 
     def clicked_second_point(self):
+        # Thread start function for the second point
         thread_second_point = threading.Thread(target=self.second_point, daemon=True)
         self.btn_second_point['state'] = 'disabled'
         thread_second_point.start()
         self.after(ms=1000, func=lambda: self.button_unlock(thread_second_point, self.btn_second_point))
 
     def clicked_third_point(self):
+        # Thread start function for the third point
         thread_third_point = threading.Thread(target=self.third_point, daemon=True)
         self.btn_third_point['state'] = 'disabled'
         thread_third_point.start()
         self.after(ms=1000, func=lambda: self.button_unlock(thread_third_point, self.btn_third_point))
 
     def clicked_bifurcation_diagram(self):
+        # Thread start function for the bifurcation diagram
         thread_bifurcation_diagram = threading.Thread(target=self.bifurcation_diagram, daemon=True)
         self.btn_bifurcation_diagram['state'] = 'disabled'
         thread_bifurcation_diagram.start()
         self.after(ms=1000, func=lambda: self.button_unlock(thread_bifurcation_diagram,
-                                                          self.btn_bifurcation_diagram))
+                                                            self.btn_bifurcation_diagram))
 
     def bifurcation_diagram(self):
         fig, ax = plt.subplots()
@@ -93,22 +98,24 @@ class App(Tk):
         ax.set_ylabel('x', loc='top')
         ax.grid()
         for r in arange(3, 4.001, 0.001):
-            x = [0.4, ]
+            x = [0.4, ]  # Start point
             t = [r, ]
             for c in range(1, self.number_of_values):
-                x.append(r * x[c - 1] * (1 - x[c - 1]))
+                x.append(r*x[c-1]*(1-x[c-1]))  # Model
                 t.append(r)
-            ax.scatter(t[self.number_of_values - 200:], x[self.number_of_values - 200:], s=1, c='b')
+            ax.scatter(t[self.number_of_values - 200:], x[self.number_of_values - 200:], s=1, c='b')  # Dot plot output
         plt.show()
 
     def first_point(self):
         mat = [[], [], [], []]
         for r in range(3, 5):
-            x = [0.4, ]
+            x = [0.4, ]  # Start point
             for i in range(self.number_of_values):
-                x.append(r * x[i] * (1 - x[i]))
+                x.append(r * x[i] * (1 - x[i]))  # Model
                 for pos in range(2):
+                    # writing values into the matrix x(n) and into the matrix x(n+1)
                     mat[r + 2 * pos - 3].append(x[i + pos])
+        # Plotting
         title_list = ['Graphic dependency f(x,r) for r=',
                       'Phase portrait at r=']
         axis_names = [['x', 'r'],
@@ -134,12 +141,14 @@ class App(Tk):
 
     def second_point(self):
         mat = [[], []]
-        x = [0.4, ]
+        x = [0.4, ]  # Start point
         r = 4
         for i in range(self.number_of_values):
-            x.append(r * x[i] * (1 - x[i]))
+            x.append(r * x[i] * (1 - x[i]))  # Model
             for number in range(2):
+                # Writing values to a matrix with an accuracy of 15 and 2 decimal places
                 mat[number].append(round(x[i], 2 if number == 0 else 15))
+        # Plotting
         fig, ax = plt.subplots(1, 2, figsize=(30 * self.cm, 15 * self.cm))
         for graph in range(2):
             current_ax = ax[graph % 2]
@@ -158,13 +167,16 @@ class App(Tk):
 
     def third_point(self):
         mat = [[], [], [], []]
-        x = [0.4, ]
+        x = [0.4, ]  # Start point
         r = 4
         for i in range(self.number_of_values):
-            x.append(r * x[i] * (1 - x[i]))
+            x.append(r * x[i] * (1 - x[i]))  # Model
             for number in range(4):
+                # Writing values into the matrix x(n) and into the matrix x(n+1)
+                # with an accuracy of 15 and 2 decimal places
                 mat[number].append(round(x[i] if number in [0, 2] else x[i + 1],
                                          2 if number in [0, 1] else 15))
+        # Plotting
         fig, ax = plt.subplots(1, 2, figsize=(30 * self.cm, 15 * self.cm))
         for graph in range(2):
             current_ax = ax[graph % 2]
@@ -185,6 +197,7 @@ class App(Tk):
         plt.show()
 
     def button_unlock(self, current_thread, current_button):
+        # Function to unlock the button after closing the figure
         if not current_thread.is_alive():
             current_button['state'] = 'active'
         else:
