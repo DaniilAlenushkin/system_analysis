@@ -163,7 +163,7 @@ class App(Tk):
             plt.show(block=False)
         for graph in range(2):
             current_ax = ax[graph % 2]
-            current_ax.set_title('Graphic dependency f(x,r) for r=4')
+            current_ax.set_title('Graphic dependency f(x,n) for r=4')
             current_ax.grid()
             current_ax.set_xlabel('n', loc='right')
             current_ax.set_ylabel('x', loc='top')
