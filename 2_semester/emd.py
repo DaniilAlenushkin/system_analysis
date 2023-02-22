@@ -137,6 +137,7 @@ def prediction(last_points_c, y_point_for_prediction):
             dict_results[element] = abs(sum_element - y_point_for_prediction[1])
     minimal_k = min(dict_results.values())
     print(f'Minimal comparison factor {minimal_k}')
+    print('The best prediction is:')
     for i in [i for i in dict_results.keys() if dict_results.get(i) == minimal_k]:
         for value in i:
             print(f'C{value}', end='') if value == i[0] else print(f'+C{value}', end='')
@@ -147,14 +148,13 @@ if __name__ == '__main__':
     wb = openpyxl.load_workbook('platinum_3_years.xlsx')
     current_sheet = wb.sheetnames[0]
     rows_numbers = int(wb.worksheets[0].dimensions[4:]) + 1
-    x_data = [wb[current_sheet][f'A{i}'].value for i in range(2, rows_numbers)]
-    y_data = [wb[current_sheet][f'B{i}'].value for i in range(2, rows_numbers)]
+    x_data = [wb[current_sheet][f'A{i}'].value for i in range(2, rows_numbers)][::-1]
+    y_data = [wb[current_sheet][f'B{i}'].value for i in range(2, rows_numbers)][::-1]
     x_form = [0, ]
     epsilon_internal = 0.1
     epsilon_external = 0.13
     for i in range(1, len(x_data)):
-        x_form.append(x_form[-1] + abs((x_data[::-1][i] - x_data[::-1][i-1]).days))
-    y_data = y_data[::-1]
+        x_form.append(x_form[-1] + abs((x_data[i] - x_data[i-1]).days))
     prediction_point = [x_form[-1], y_data[-1]]
     y_data, x_form = y_data[:-1], x_form[:-1]
     last_point, imf_1 = get_ts('Platinum (Bank of Russia)', 'y(t)', x_form, y_data)
